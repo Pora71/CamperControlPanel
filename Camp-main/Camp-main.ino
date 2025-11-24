@@ -173,10 +173,6 @@ char  inputString[21];
 
 // Assign human-readable names to some common 16-bit color values:
 
-
-
-
-
 #define ICON_ACTIVE YELLOW
 #define ICON_ERROR RED
 
@@ -374,7 +370,7 @@ void setup(void) {
 
   first_start = 1;
 
-  //GSM_Report(Settings.mobile1); //test gsm send
+  GSM_Report(Settings.mobile1); //test gsm send
 
 
 }
@@ -394,11 +390,11 @@ void loop()
     }
     if (first_start)
     {
-      //sms_message.reserve(100); sms_message = "AutoCamp online";  SMS(Settings.mobile1);
-      //GSM_Report(Settings.mobile1);
+      sms_message.reserve(100); sms_message = "AutoCamp online";  SMS(Settings.mobile1);
+      GSM_Report(Settings.mobile1);
       first_start = 0;
     }
-    //TestModem();
+    TestModem();
   }
  
 }
@@ -627,7 +623,7 @@ void DrawMAIN(uint8_t refresh)
   int i, id;
   uint16_t c;
   char tmp[21],  buff[100];
-  //uint32_t time = millis();
+  uint32_t time = millis();
   if ( refresh == R_FULL) {
     EKRAN = E_MAIN;
 
@@ -1593,8 +1589,8 @@ uint8_t TouchAction()
         EkranSETUP();
       }
       if (id == K_SOUND) {
-        //TestColors();
-        //EkranSOUND();
+        TestColors();
+        EkranSOUND();
       }
       if (id == K_MODEM) {
         EkranMODEM(R_FULL);
@@ -2047,7 +2043,7 @@ void SensorRandomData(int ind) {
     p = p + random(-20, 20);
     if (p < g_min) p = g_min;
     if (p > g_max) p = g_max;
-    //p=g_min;
+    p=g_min;
     SENSORSD[ind].data24H[i] = p;
   }
   for (i = 0; i < MaxSensorsData1H; i++) {
@@ -2055,7 +2051,7 @@ void SensorRandomData(int ind) {
     p = p + random(-20, 20);
     if (p < g_min) p = g_min;
     if (p > g_max) p = g_max;
-    //p=g_min;
+    p=g_min;
     SENSORSD[ind].data1H[i] = p;
   }
 }
@@ -2141,7 +2137,7 @@ void ScanSensor(uint8_t id_module) {
 void TFT_Init() {
   tft.reset();
 
-  tft.begin(0x9341); // SDFP5408
+  tft.begin(0x9341); // Adafruit 3.5 tft touchscreen
 
   tft.setRotation(3); // Need for the Mega, please changed for your choice or rotation initial
 }
@@ -2331,8 +2327,8 @@ void RTC_Init()
     // following line sets the RTC to the date & time this sketch was compiled
     rtc.adjust(DateTime(__DATE__, __TIME__));
   }
-  //  rtc.adjust(DateTime("02.02.2017","23:20:00"));
-  //rtc.adjust(DateTime(__DATE__, __TIME__));
+  // rtc.adjust(DateTime("02.02.2017","23:20:00"));
+  // rtc.adjust(DateTime(__DATE__, __TIME__));
 }
 
 
@@ -2363,13 +2359,13 @@ void mp3_sendCommand(int8_t command, int16_t dat)
   mp3_send_buf[5] = (int8_t)(dat >> 8);  //datah
   mp3_send_buf[6] = (int8_t)(dat);       //datal
   mp3_send_buf[7] = 0xef;   //
-  // Serial.print("Sending: ");
+   Serial.print("Sending: ");
   for (uint8_t i = 0; i < 8; i++)
   {
     mp3.write(mp3_send_buf[i]) ;
-    // Serial.print(sbyte2hex(mp3_send_buf[i]));
+    Serial.print(sbyte2hex(mp3_send_buf[i]));
   }
-  //Serial.println();
+  Serial.println();
 }
 
 String sbyte2hex(uint8_t b)
@@ -2428,11 +2424,11 @@ void EkranMODEM(int _refresh)
   tft.setTextSize(1);
   line = 0;
   ok = false;
-  GSMTest(F("ATZ"));//reset profile
+  GSMTest(F("ATZ")); //reset profile
   delay(100);
-  //GSMTest(F("AT+CREG=1"));
-  //GSMTest(F("AT+CSPN?"));
-  //GSMTest(F("AT+COPN"));//Display a full list of network operator names
+  GSMTest(F("AT+CREG=1"));
+  GSMTest(F("AT+CSPN?"));
+  GSMTest(F("AT+COPN")); //Display a full list of network operator names
 
 
   while (!ok)
@@ -2450,7 +2446,7 @@ void EkranMODEM(int _refresh)
       tft.fillRoundRect(41, 131, 398, 168, 5, BLUEd);
 
       line = 0;
-      //GSMTest(F("AT+CREG=2")); line = GSMShowResult(line);
+      GSMTest(F("AT+CREG=2")); line = GSMShowResult(line);
       GSMTest(F("AT+CREG?")); line = GSMShowResult(line);
       GSMTest(F("AT+COPS?")); line = GSMShowResult(line);
       GSMTest(F("AT+CFUN?")); line = GSMShowResult(line);
@@ -2875,4 +2871,5 @@ void SetSensor(int nr, int id, int icon)
   SENSORS[nr].icon = icon;
 
 }
+
 
